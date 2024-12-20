@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Step Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #333;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1em;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        textarea, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 1rem;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            background: #2575fc;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #6a11cb;
+        }
+        pre {
+            background: #eee;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            position: relative;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+        }
+        .arrow {
+            position: absolute;
+            right: -20px;
+            top: 10px;
+            font-size: 1.5rem;
+            color: #4CAF50;
+        }
+        .reset-button {
+            margin-top: 20px;
+            background: #e53935;
+            color: white;
+        }
+        .reset-button:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Code Step Visualizer</h1>
+    </header>
+    <div class="container">
+        <h2>Enter Code</h2>
+        <textarea id="codeInput" rows="10" placeholder="Enter your code here..."></textarea>
+        <button onclick="runCodeStepByStep()">Run Step-by-Step</button>
+        <h2>Code Execution</h2>
+        <pre id="codeBlock"></pre>
+        <h2>Output</h2>
+        <pre id="outputBlock"></pre>
+        <button class="reset-button" onclick="resetVisualizer()">Reset</button>
+    </div>
+    <script>
+        let codeLines = [];
+        let currentLine = 0;
+
+        function runCodeStepByStep() {
+            const codeInput = document.getElementById('codeInput').value;
+            codeLines = codeInput.split('\n');
+            currentLine = 0;
+            updateCodeBlock();
+            updateOutputBlock();
+        }
+
+        function updateCodeBlock() {
+            const codeBlock = document.getElementById('codeBlock');
+            codeBlock.innerHTML = '';
+
+            codeLines.forEach((line, index) => {
+                const lineElement = document.createElement('div');
+                lineElement.textContent = line;
+                if (index === currentLine) {
+                    lineElement.classList.add('highlight');
+                    const arrow = document.createElement('span');
+                    arrow.textContent = '\u2192'; // Unicode arrow symbol
+                    arrow.classList.add('arrow');
+                    lineElement.appendChild(arrow);
+                }
+                codeBlock.appendChild(lineElement);
+            });
+        }
+
+        function updateOutputBlock() {
+            const outputBlock = document.getElementById('outputBlock');
+            if (currentLine < codeLines.length) {
+                // Simulate output for each line
+                outputBlock.textContent += `Executing line ${currentLine + 1}: ${codeLines[currentLine]}\n`;
+                currentLine++;
+                setTimeout(() => {
+                    updateCodeBlock();
+                    updateOutputBlock();
+                }, 1000);
+            }
+        }
+
+        function resetVisualizer() {
+            document.getElementById('codeInput').value = '';
+            document.getElementById('codeBlock').innerHTML = '';
+            document.getElementById('outputBlock').textContent = '';
+            codeLines = [];
+            currentLine = 0;
+        }
+    </script>
+</body>
+</html>
